@@ -166,6 +166,7 @@ fun LoginScreen(
                         .padding(10.dp)
                         .size(40.dp)
                 )
+
                 Text(
                     text = "Login con Google",
                     fontSize = 18.sp,
