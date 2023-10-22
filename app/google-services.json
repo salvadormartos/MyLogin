@@ -12,7 +12,20 @@
           "package_name": "com.smb.mylogin"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "289403097709-09rkn7u1898prhsb8kg7i30deolsk48s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.smb.mylogin",
+            "certificate_hash": "e4cbfb5ef6269d28dde6a8cc7244f288959b5b1d"
+          }
+        },
+        {
+          "client_id": "289403097709-s121jmfc1qfi0be4vb3vpd4vms2cur2f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCvKNbUB1DcftU5imfzDVFEXl4tSFNhS-I"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "289403097709-s121jmfc1qfi0be4vb3vpd4vms2cur2f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
