@@ -90,7 +90,9 @@ fun LoginScreen(
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize()
+
         ) {
             if (showLoginForm.value) { //si es true crea cuenta sino inicia sesion
                 Text(text = "Inicia sesion")
