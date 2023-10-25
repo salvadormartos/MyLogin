@@ -98,7 +98,6 @@ fun LoginScreen(
                 Text(text = "Inicia sesion")
                 UserForm(isCreateAccount = false) { email, password ->
                     Log.d("My Login", "Logueando con $email y $password")
-
                     viewModel.signInWithEmailAndPassword(
                         email,
                         password
@@ -111,7 +110,6 @@ fun LoginScreen(
                 Text(text = "Crear una cuenta")
                 UserForm(isCreateAccount = true) { email, password ->
                     Log.d("My Login", "Creando cuenta con $email y $password")
-
                     viewModel.createUserWithEmailAndPassword(
                         email,
                         password
@@ -202,7 +200,9 @@ fun UserForm(
         email.value.trim().isNotEmpty() && password.value.trim().isNotEmpty()
     }
 
+    //controla que al hacer clic en el boton submite, el teclado se oculte
     val keyboardController = LocalSoftwareKeyboardController.current
+
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -221,6 +221,7 @@ fun UserForm(
             inputValido = valido
         ) {
             onDone(email.value.trim(), password.value.trim())
+            //se oculta el teclado, el ? es que se llama la función en modo seguro
             keyboardController?.hide()
         }
     }

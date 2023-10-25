@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 
 class LoginScreenViewModel : ViewModel() {
 
-    private val auth: FirebaseAuth = Firebase.auth //la estaremos usando a lo lardo del proyecto
+    private val auth: FirebaseAuth = Firebase.auth //la estaremos usando a lo largo del proyecto
     // impide que se creen varios usuarios accidentalmente
     private val _loading = MutableLiveData(false)
 
