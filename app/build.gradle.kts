@@ -82,4 +82,9 @@ dependencies {
     //Google Service
     implementation("com.google.android.gms:play-services-auth:20.7.0")
 
+    //Facebook
+    implementation("com.facebook.android:facebook-login:latest.release")
+    implementation("com.facebook.android:facebook-android-sdk:latest.release")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:latest.release")
+
 }

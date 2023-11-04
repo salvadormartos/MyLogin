@@ -59,7 +59,7 @@ fun SplashScreen(navController: NavController) {
         delay(1500)
 
         navController.navigate(Screens.LoginScreen.name)  //poner esto al comienzo
-        //si ya está logeado el usuario no necesita autenticarse de nuevo // poner esto al final
+        //si ya está logueado el usuario no necesita autenticarse de nuevo // poner esto al final
 /*        if (FirebaseAuth.getInstance().currentUser?.email.isNullOrEmpty()) {
             navController.navigate(Screens.LoginScreen.name)
         } else {

@@ -29,9 +29,11 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -47,12 +49,23 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.facebook.AccessToken
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.auth
 import com.smb.mylogin.R
 import com.smb.mylogin.navigation.Screens
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 @Composable
 fun LoginScreen(
@@ -64,15 +77,36 @@ fun LoginScreen(
         mutableStateOf(true)
     }
 
+    // Facebook
+    val scope = rememberCoroutineScope()
+    val loginManager = LoginManager.getInstance()
+    val callbackManager = remember { CallbackManager.Factory.create() }
+    val launcherFb = rememberLauncherForActivityResult(
+        loginManager.createLogInActivityResultContract(callbackManager, null)) {
+        // nothing to do. handled in FacebookCallback
+
+        scope.launch {
+            val tokenFB = AccessToken.getCurrentAccessToken()
+            val credentialFB = tokenFB?.let { it1 -> FacebookAuthProvider.getCredential(it1.token) }
+            if(credentialFB != null){
+                viewModel.signInWithFacebook(credentialFB){
+                    navController.navigate(Screens.HomeScreen.name)
+                }
+            }
+        }
+    }
+
     // Google
     // este token se consigue en Firebase->Proveedores de Acceso->Google->Conf del SKD->Id de cliente web
     val token = "289403097709-s121jmfc1qfi0be4vb3vpd4vms2cur2f.apps.googleusercontent.com"
     val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts
-            .StartActivityForResult()
+            .StartActivityForResult() // esto abrirá un activity para hacer el login de Google
     ) {
-        val task = GoogleSignIn.getSignedInAccountFromIntent(it.data)
+        val task =
+            GoogleSignIn.getSignedInAccountFromIntent(it.data) // esto lo facilita la librería añadida
+        // el intent será enviado cuando se lance el launcher
         try {
             val account = task.getResult(ApiException::class.java)
             val credential = GoogleAuthProvider.getCredential(account.idToken, null)
@@ -83,6 +117,9 @@ fun LoginScreen(
             Log.d("My Login", "GoogleSignIn falló")
         }
     }
+
+
+
 
     Surface(
         modifier = Modifier
@@ -139,12 +176,15 @@ fun LoginScreen(
                     color = MaterialTheme.colorScheme.secondary)
             }
 
+
+            // GOOGLE
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(10.dp)
                     .clip(RoundedCornerShape(10.dp))
                     .clickable { // Se crea un buider de opciones, una de ellas incluye un token
+
                         val opciones = GoogleSignInOptions
                             .Builder(
                                 GoogleSignInOptions.DEFAULT_SIGN_IN
@@ -161,7 +201,7 @@ fun LoginScreen(
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_google),
-                    contentDescription = "Login con Google",
+                    contentDescription = "Login con GOOGLE",
                     modifier = Modifier
                         .padding(10.dp)
                         .size(40.dp)
@@ -173,6 +213,36 @@ fun LoginScreen(
                     fontWeight = FontWeight.Bold
                 )
             }
+
+            // FACEBOOK
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)
+                    .clip(RoundedCornerShape(10.dp))
+                    .clickable {
+
+                        launcherFb.launch(listOf("email","public_profile"))
+                    },
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_fb),
+                    contentDescription = "Login con facebook",
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .size(40.dp)
+                )
+
+                Text(
+                    text = "Login con Facebook",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+
         }
     }
 }
@@ -327,6 +397,8 @@ fun PasswordVisibleIcon(
         )
     }
 }
+
+
 
 
 

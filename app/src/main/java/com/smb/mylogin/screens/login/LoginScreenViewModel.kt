@@ -14,7 +14,7 @@ import com.smb.mylogin.model.User
 import kotlinx.coroutines.launch
 
 class LoginScreenViewModel : ViewModel() {
-
+    // OJOO!!! DAR PERMISO INTERNET EN MANIFEST
     private val auth: FirebaseAuth = Firebase.auth //la estaremos usando a lo largo del proyecto
     // impide que se creen varios usuarios accidentalmente
     private val _loading = MutableLiveData(false)
@@ -30,7 +30,7 @@ class LoginScreenViewModel : ViewModel() {
                         } else {
                             Log.d(
                                 "MyLogin",
-                                "signInWithEmailAndPassword: ${task.result.toString()}"
+                                "signInWithGoogle: ${task.result.toString()}"
                             )
                         }
                     }
@@ -38,6 +38,27 @@ class LoginScreenViewModel : ViewModel() {
                 Log.d("MyLogin", "Error al loguear con Google: ${ex.message}")
             }
         }
+
+    fun signInWithFacebook(credential: AuthCredential, home: () -> Unit) =
+        viewModelScope.launch {
+            try {
+                auth.signInWithCredential(credential)
+                    .addOnCompleteListener { task -> //si la tarea tuve exito escribimos mensaje en log
+                        if (task.isSuccessful) {
+                            Log.d("MyLogin", "Facebook logueado!!!!")
+                            home()
+                        } else {
+                            Log.d(
+                                "MyLogin",
+                                "signInWithFacebook: ${task.result.toString()}"
+                            )
+                        }
+                    }
+            } catch (ex: Exception) {
+                Log.d("MyLogin", "Error al loguear con Facebook: ${ex.message}")
+            }
+        }
+
 
 
     fun signInWithEmailAndPassword(email: String, password: String, home: () -> Unit) =
@@ -74,7 +95,7 @@ class LoginScreenViewModel : ViewModel() {
                         val displayName =
                             task.result.user?.email?.split("@")
                                 ?.get(0) //Extrae el username para el firestore
-                        createUser(displayName)
+                        createUser(displayName) // para el firestore
                         home()
                     } else {
                         Log.d(
