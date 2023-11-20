@@ -87,7 +87,7 @@ fun LoginScreen(
 
         scope.launch {
             val tokenFB = AccessToken.getCurrentAccessToken()
-            val credentialFB = tokenFB?.let { it1 -> FacebookAuthProvider.getCredential(it1.token) }
+            val credentialFB = tokenFB?.let {FacebookAuthProvider.getCredential(it.token)}
             if(credentialFB != null){
                 viewModel.signInWithFacebook(credentialFB){
                     navController.navigate(Screens.HomeScreen.name)
